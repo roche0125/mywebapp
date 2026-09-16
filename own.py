@@ -215,17 +215,23 @@ if selected_mbti:
     info = bf_data[selected_mbti]
     tags = "".join([f'<span class="tag">{t}</span>' for t in info["tag"].split()])
     
-    st.balloons() # 케이크/풍선 축하 효과!
+    st.balloons()
     
+    # 1. 상단 카드 정보
     st.markdown(f"""
         <div class="recommend-card">
             <p style="color: #ff4757; font-weight: 800; font-size: 1.1rem; margin-bottom: 0px;">💖 {selected_mbti}만을 위한 운명의 이상형</p>
             <div class="country-title">{info['country']}</div>
             <p style="color: #57606f; font-weight: 700; font-size: 1.1rem; margin-bottom: 0.5rem;">"{info['concept']}"</p>
-            
-            <!-- 사진 표시 영역 -->
-            <img src="{info['img']}" class="bf-img" alt="이상형 이미지">
-            
+        </div>
+    """, unsafe_allow_html=True)
+    
+    # 2. 이미지 표시 (Streamlit 순정 함수 - 이 부분이 핵심!)
+    st.image(info['img'], use_container_width=True)
+    
+    # 3. 하단 태그 및 설명
+    st.markdown(f"""
+        <div class="recommend-card" style="margin-top: 0.5rem;">
             <div style="margin-bottom: 1rem;">{tags}</div>
             <div class="char-box">
                 <p style="color: #2f3542; line-height: 1.65; margin: 0; font-size: 0.98rem;">
