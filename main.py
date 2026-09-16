@@ -1,34 +1,34 @@
 import streamlit as st
-import random
 
 # 페이지 기본 설정
 st.set_page_config(
-    page_title="✈️ MBTI 감성 여행 코스 추천",
-    page_icon="✈️",
+    page_title="💌 MBTI 이상형 남자친구 국가 찾기",
+    page_icon="💘",
     layout="centered"
 )
 
-# 힙하고 커스텀된 CSS 스타일 적용
+# 힙하고 커스텀된 사랑스러운 CSS 스타일 적용
 st.markdown("""
     <style>
     /* 전체 배경 및 폰트 설정 */
     .stApp {
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        background: linear-gradient(135deg, #fff5f7 0%, #eecda3 100%);
         font-family: 'Pretendard', sans-serif;
     }
     
     /* 타이틀 카드 스타일 */
     .main-title {
         text-align: center;
-        background: white;
+        background: rgba(255, 255, 255, 0.9);
         padding: 2rem;
-        border-radius: 20px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        border-radius: 24px;
+        box-shadow: 0 10px 25px rgba(255, 182, 193, 0.3);
         margin-bottom: 2rem;
+        border: 2px solid #ffb6c1;
     }
     .main-title h1 {
-        color: #2b5876;
-        font-size: 2.2rem;
+        color: #ff4757;
+        font-size: 2.1rem;
         font-weight: 800;
         margin-bottom: 0.5rem;
     }
@@ -36,84 +36,173 @@ st.markdown("""
     /* 결과 카드 스타일 */
     .recommend-card {
         background: white;
-        padding: 2rem;
+        padding: 2.2rem;
         border-radius: 24px;
-        box-shadow: 0 12px 30px rgba(43, 88, 118, 0.12);
-        border: 2px solid #eef2f3;
+        box-shadow: 0 12px 30px rgba(255, 71, 87, 0.15);
+        border: 2px solid #ffeaa7;
         margin-top: 1.5rem;
+        text-align: center;
     }
-    .dest-title {
-        color: #4e4376;
-        font-size: 1.8rem;
-        font-weight: 700;
-        margin-bottom: 0.5rem;
+    .country-title {
+        color: #2f3542;
+        font-size: 2rem;
+        font-weight: 800;
+        margin: 0.8rem 0;
     }
     .tag {
         display: inline-block;
-        background: #e0c3fc;
-        color: #4a00e0;
-        padding: 4px 12px;
+        background: #ffeaa7;
+        color: #d63031;
+        padding: 6px 14px;
         border-radius: 50px;
-        font-size: 0.85rem;
-        font-weight: 600;
-        margin-right: 6px;
+        font-size: 0.88rem;
+        font-weight: 700;
+        margin: 3px;
+    }
+    .char-box {
+        background: #fff0f3;
+        border-radius: 16px;
+        padding: 1.2rem;
+        margin-top: 1rem;
+        text-align: left;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# MBTI별 힙하고 사랑스러운 여행지 데이터베이스
-mbti_data = {
-    "INTJ": {"dest": "아이슬란드 레이캬비크 🧊", "tag": "#오로라 #완벽한계획 #조용한자연", "desc": "철저하게 계획된 미지의 대자연 탐험! 붐비지 않고 광활한 풍경 속에서 깊은 생각을 정리하기 최적이야 💙"},
-    "INTP": {"dest": "일본 교토 🍵", "tag": "#고즈넉 #아이디어샘솟음 #산책", "desc": "조용하고 감성적인 골목길을 거닐며 자율 여행하기 딱! 뜻밖의 아기자기한 카페를 발견하는 재미가 있어 💙"},
-    "ENTJ": {"dest": "미국 뉴욕 🏙️", "tag": "#열정 #랜드마크 #트렌디", "desc": "화려함과 끊임없는 에너지가 넘치는 곳! 촘촘한 동선과 치열한 도시의 힙한 감성을 즐겨봐 💙"},
-    "ENTP": {"dest": "인도네시아 발리 🏄‍♂️", "tag": "#자유로운영혼 #디지털노마드 #다채로운", "desc": "매일매일 새로운 이벤트와 서핑, 힙한 뷰티풀 비치 클럽이 기다리는 곳! 즉흥 여행의 정석 💙"},
-    
-    "INFJ": {"dest": "스위스 체르마트 🏔️", "tag": "#힐링 #자연속으로 #마음의평화", "desc": "동화 같은 풍경 속에서 진정한 자아를 찾는 시간. 따뜻하고 조용한 휴식이 필요한 너에게 추천해 💙"},
-    "INFP": {"dest": "체코 프라하 🏰", "tag": "#낭만과감성 #동화속도시 #몽상가", "desc": "붉은 지붕과 돌담길을 걸으며 감성에 푹 빠져볼 수 있는 로맨틱한 스폿이야 💙"},
-    "ENFJ": {"dest": "이탈리아 피렌체 🎨", "tag": "#예술 #따뜻한온기 #낭만가득", "desc": "아름다운 예술작품과 사람들의 온기가 넘쳐나는 낭만의 도시! 사랑하는 사람들과 추억 쌓기 좋아 💙"},
-    "ENFP": {"dest": "스페인 바르셀로나 💃", "tag": "#정열 #컬러풀 #사랑스러움", "desc": "가우디의 알록달록한 건축과 흥겨운 축제 분위기! 너의 톡톡 튀는 발랄함과 어울리는 곳이야 💙"},
-    
-    "ISTJ": {"dest": "독일 뮌헨 🏰", "tag": "#정교함 #깔끔함 #역사와전통", "desc": "질서정연하고 정확하며 역사적인 깊이가 느껴지는 도시! 체계적인 여행의 참맛을 느껴봐 💙"},
-    "ISFJ": {"dest": "오스트리아 비엔나 🎻", "tag": "#클래식 #안락함 #친절한도시", "desc": "부드러운 음악과 아늑한 카페 문화가 있는 따뜻한 곳. 마음 편히 편안한 쉼을 선사할게 💙"},
-    "ESTJ": {"dest": "싱가포르 🇸🇬", "tag": "#스마트 #체계적 #세련됨", "desc": "완벽하게 가꿔진 도시 환경과 편리한 교통! 막힘없는 최고의 효율성 중심 코스를 즐길 수 있어 💙"},
-    "ESFJ": {"dest": "프랑스 파리 🗼", "tag": "#미식과쇼핑 #함께하는즐거움 #감성샷", "desc": "맛있는 디저트와 인생샷 스폿이 한가득! 소중한 사람들과의 스윗한 추억을 만들어봐 💙"},
-    
-    "ISTP": {"dest": "뉴질랜드 퀸스타운 🪂", "tag": "#액티비티 #자연주의 #스릴", "desc": "번지점프부터 아웃도어 스포츠까지! 말보다 행동으로 체험하며 스트레스를 날려버리자 💙"},
-    "ISFP": {"dest": "태국 치앙마이 🌿", "tag": "#느림의미학 #소소한행복 #힐링포토", "desc": "느긋하고 따뜻한 감성 속에서 아기자기한 소품숍을 구경하고 느긋하게 힐링하기 좋아 💙"},
-    "ESTP": {"dest": "미국 라스베이거스 🎰", "tag": "#도파민폭발 #화려함 #즉興", "desc": "24시간 지루할 틈이 없는 화려한 불빛의 도시! 화끈한 쇼와 스릴이 넘쳐나는 곳이야 💙"},
-    "ESFP": {"dest": "멕시코 칸쿤 🏖️", "tag": "#휴양지파티 #카리브해 #텐션업", "desc": "에메랄드빛 바다와 신나는 음악! 세상의 모든 흥을 발산할 수 있는 최고의 핫플레이스 💙"}
+# MBTI별 힙하고 사랑스러운 남자친구 국가 데이터베이스
+bf_data = {
+    "INTJ": {
+        "country": "독일 🇩🇪",
+        "concept": "지적이고 든든한 뇌섹남 훈남",
+        "tag": "#개념충만 #체계적 #은근한스윗함 #나만바라봐",
+        "desc": "논리적이고 자기관리 완벽한 스타일! 겉은 차가워 보여도 너의 고충을 스마트하게 해결해주고 오직 너에게만 다정한 츤데레 매력이 가득해 💙"
+    },
+    "INTP": {
+        "country": "일본 🇯🇵",
+        "concept": "고즈넉한 감성의 칠(Chill)한 미소년",
+        "tag": "#자유로운영혼 #개성파 #취향존중 #아기자기",
+        "desc": "너만의 엉뚱하고 깊은 생각들을 온전히 이해해주는 매력남! 함께 조용한 LP 바나 감성 카페를 찾아다니며 소소하고 깊은 대화를 나누기 딱이야 💙"
+    },
+    "ENTJ": {
+        "country": "미국 🇺🇸",
+        "concept": "당당하고 에너제틱한 야망 직진남",
+        "tag": "#자신감폭발 #파워풀 #솔직담백 #서포터",
+        "desc": "너의 꿈과 목표를 누구보다 강력하게 응원해주는 리더십형 댕댕이! 함께 멋진 미래를 설계하며 힙하고 활기찬 데이트를 즐길 수 있어 💙"
+    },
+    "ENTP": {
+        "country": "스페인 🇪🇸",
+        "concept": "위트 넘치고 정열적인 티키타카 장인",
+        "tag": "#장난기가득 #도파민자극 #흥부자 #매력폭발",
+        "desc": "지루할 틈이 전혀 없는 인싸남! 너의 엉뚱한 아이디어에 찰떡같이 장단을 맞춰주고 매일 밤 새로운 모험으로 이끌어줄 거야 💙"
+    },
+    "INFJ": {
+        "country": "영국 🇬🇧",
+        "concept": "세심하고 클래식한 젠틀맨",
+        "tag": "#다정한매너 #깊은감성 #어른스러운 #로맨틱",
+        "desc": "너의 섬세한 감정 선을 먼저 알아채주는 따뜻한 젠틀맨! 조용한 미술관 데이트와 따뜻한 차 한 잔 나누며 평생 다정한 편이 되어줄 사람이야 💙"
+    },
+    "INFP": {
+        "country": "프랑스 🇫🇷",
+        "concept": "낭만과 예술을 사랑하는 몽상가 남친",
+        "tag": "#시인감성 #소울메이트 #사랑꾼 #예술가풍",
+        "desc": "너의 말 한마디에도 시적인 의미를 부여해주는 낭만파! 에펠탑 아래서 널 위한 노래를 들려줄 것 같은 달콤하고 사랑스러운 매력덩어리 💙"
+    },
+    "ENFJ": {
+        "country": "이탈리아 🇮🇹",
+        "concept": "스윗함 한도초과 사랑 표현 장인",
+        "tag": "#칭찬폭격기 #햇살남친 #아낌없는사랑 #인생샷전문가",
+        "desc": "눈만 마주치면 예쁘다고 해주는 인간 비타민! 너를 세계 최고의 주인공으로 만들어주고 모든 친구들에게 널 자랑하고 싶어 하는 직진꾼이야 💙"
+    },
+    "ENFP": {
+        "country": "브라질 🇧🇷",
+        "concept": "해피 바이러스 뿜뿜 텐션짱 남친",
+        "tag": "#긍정왕 #사랑스러운댕댕이 #어디서나핫플 #텐션업",
+        "desc": "너와 함께라면 언제 어디든 축제로 만드는 열정남! 너의 톡톡 튀는 발랄함을 그대로 사랑해주고 매일 색다른 재미를 선사할 거야 💙"
+    },
+    "ISTJ": {
+        "country": "스위스 🇨🇭",
+        "concept": "바위처럼 든든하고 신뢰감 100% 남친",
+        "tag": "#약속신봉자 #안정감 #진국인남자 #따스한휴식",
+        "desc": "변함없는 마음으로 널 지켜주는 든든한 소나무 같은 사람! 세심한 계획과 아늑한 자연 속 힐링으로 네 마음에 완벽한 평온을 줄 거야 💙"
+    },
+    "ISFJ": {
+        "country": "캐나다 🇨🇦",
+        "concept": "다정함이 배어있는 인간 핫팩",
+        "tag": "#배려심끝판왕 #무한한공감 #세심함 #힐링포옹",
+        "desc": "네가 말하지 않아도 필요한 걸 챙겨주는 세심함의 대명사! 따뜻한 코코아처럼 너의 지친 하루를 감싸주는 쏘스윗한 휴식처 같은 사람 💙"
+    },
+    "ESTJ": {
+        "country": "싱가포르 🇸🇬",
+        "concept": "세련되고 능숙한 스마트 도시남",
+        "tag": "#갓생러 #세련된감각 #효율성갑 #확실한클래스",
+        "desc": "자기 일도 연애도 스마트하게 잘해내는 뇌섹 매력남! 완벽한 데이트 코스와 힙한 루프탑 바에서 널 스마트하게 케어해줄 거야 💙"
+    },
+    "ESFJ": {
+        "country": "호주 🇦🇺",
+        "concept": "친근하고 스포티한 대형견 남친",
+        "tag": "#볼매 #친화력갑 #댕댕미 #다정다감",
+        "desc": "너의 친구들과도 금방 친해지는 밝고 친근한 인싸! 주말마다 예쁜 야외로 피크닉을 떠나서 널 웃게 만들어줄 건강하고 다정한 남친이야 💙"
+    },
+    "ISTP": {
+        "country": "핀란드 🇫🇮",
+        "concept": "무심한 듯 다정한 쿨내 나는 츤데레",
+        "tag": "#개인영역존중 #은근한챙김 #손재주꾼 #쿨가이",
+        "desc": "불필요한 잔소리 없이 너의 자유를 100% 존중해주는 쿨남! 말보다는 묵묵히 행동으로 고장 난 걸 고쳐주거나 필요한 걸 딱 건네주는 반전 매력 💙"
+    },
+    "ISFP": {
+        "country": "태국 🇹🇭",
+        "concept": "평화롭고 아기자기한 힐링 감성남",
+        "tag": "#느림의미학 #소소한행복 #예쁜감성 #편안함",
+        "desc": "너의 여유로운 속도에 맞춰주는 세상 순한 힐링남! 맛있는 거 먹고 예쁜 소품숍 구경하면서 소소하지만 가장 행복한 순간들을 선물해 줄 거야 💙"
+    },
+    "ESTP": {
+        "country": "미국 (하와이) 🌺",
+        "concept": "스릴과 낭만을 즐기는 만능 액티비티남",
+        "tag": "#도파민파티 #쿨하고솔직 #순발력갑 #해양스포츠",
+        "desc": "고민은 짧게, 즐거움은 길게! 드라이브나 서핑처럼 액티브한 데이트로 너의 스트레스를 단번에 날려줄 스트리트 힙스터 남친 💙"
+    },
+    "ESFP": {
+        "country": "멕시코 🇲🇽",
+        "concept": "흥과 사랑이 넘치는 로맨틱 핫가이",
+        "tag": "#사랑에올인 #매일이파티 #비주얼킹 #표현력만점",
+        "desc": "너와 함께 있는 순간순간을 인생의 황금기로 만들어주는 열정 가득 남친! 신나는 음악과 눈부신 바다에서 널 안고 춤춰줄 직진 연하남 스타일 💙"
+    }
 }
 
 # 헤더 영역
 st.markdown("""
     <div class="main-title">
-        <h1>✈️ MBTI 감성 여행 코스 파인더</h1>
-        <p style="color: #666; font-size: 0.95rem;">너의 성향에 딱 맞는 힙하고 사랑스러운 여행지를 찾아줄게 💙</p>
+        <h1>💘 MBTI 감성 이상형 남친 국가 파인더</h1>
+        <p style="color: #ff6b81; font-size: 0.98rem; font-weight: 600;">너의 성향과 찰떡궁합인 힙하고 사랑스러운 남자친구는 어느 나라 사람일까? 💙</p>
     </div>
 """, unsafe_allow_html=True)
 
-# Selectbox 레이아웃
-mbti_list = list(mbti_data.keys())
+# MBTI 선택 박스
+mbti_list = list(bf_data.keys())
 selected_mbti = st.selectbox(
     "✨ 너의 MBTI를 선택해줘!",
     options=mbti_list,
     index=None,
-    placeholder="MBTI 선택하기..."
+    placeholder="여기 눌러서 MBTI 선택하기..."
 )
 
-# 결과 표시 logic
+# 선택 시 결과 출력
 if selected_mbti:
-    info = mbti_data[selected_mbti]
+    info = bf_data[selected_mbti]
     tags = "".join([f'<span class="tag">{t}</span>' for t in info["tag"].split()])
     
-    st.balloons() # 사랑스러운 팝업 효과
+    st.balloons() # 케이크/풍선 축하 효과!
     
     st.markdown(f"""
         <div class="recommend-card">
-            <p style="color: #ff6b6b; font-weight: bold; margin-bottom: 0px;">💖 {selected_mbti}만을 위한 추천 여행지</p>
-            <div class="dest-title">{info['dest']}</div>
-            <div style="margin-bottom: 12px;">{tags}</div>
-            <hr style="border: 0.5px solid #eee; margin: 12px 0;">
-            <p style="color: #444; line-height: 1.6;">{info['desc']}</p>
+            <p style="color: #ff4757; font-weight: 800; font-size: 1.1rem; margin-bottom: 0px;">💖 {selected_mbti}만을 위한 운명의 이상형</p>
+            <div class="country-title">{info['country']}</div>
+            <p style="color: #57606f; font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem;">"{info['concept']}"</p>
+            <div style="margin-bottom: 1rem;">{tags}</div>
+            <div class="char-box">
+                <p style="color: #2f3542; line-height: 1.65; margin: 0; font-size: 0.98rem;">
+                    {info['desc']}
+                </p>
+            </div>
         </div>
     """, unsafe_allow_html=True)
